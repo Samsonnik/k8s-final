@@ -28,10 +28,14 @@ pipeline {
 def buildAndPushImage(String contextPath, String dockerfilePath, String imageName) {
   podTemplate(
     label: "kaniko-${imageName}",
-    yamlFile: 'kaniko-builder.yaml'
+    containers: [
+      containerTemplate(name: 'jnlp', image: 'jenkins/inbound-agent:latest')
+    ],
+    // Загружаем YAML как строку
+    podYaml: readFile('kaniko-builder.yaml')
   ) {
     node("kaniko-${imageName}") {
-      stage("Clone and Build ${imageName}") {
+      stage("Clone & Build ${imageName}") {
         git branch: 'main', url: 'https://github.com/Samsonnik/k8s-final.git'
 
         container('kaniko') {

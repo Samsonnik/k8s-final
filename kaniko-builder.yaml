@@ -8,7 +8,8 @@ spec:
     image: gcr.io/kaniko-project/executor:debug
     imagePullPolicy: Always
     tty: true
-    command: cat
+    command:
+    - sleep
     args:
     - 9999999
     volumeMounts:
