@@ -32,7 +32,6 @@ pipeline {
               --context=`pwd`/8.images/1.front \
               --dockerfile=`pwd`/8.images/1.front/dockerfile \
               --destination=${IMAGE_NAME}:${IMAGE_TAG} \
-              --insecure-registries=docker-registry.docker-registry.svc.cluster.local:5000 \
               --skip-tls-verify=true
           """
         }
