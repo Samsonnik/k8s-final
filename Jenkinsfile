@@ -7,8 +7,8 @@ pipeline {
 
   environment {
     REGISTRY_URL = "docker-registry.docker-registry.svc.cluster.local:5000"
-    BACK_IMAGE_NAME = "back"
     FRONT_IMAGE_NAME = "front"
+    BACK_IMAGE_NAME = "back"
     IMAGE_TAG = "01"
   }
 
@@ -39,18 +39,16 @@ pipeline {
   options {
     disableConcurrentBuilds()
   }
+}
 
-  methods {
-    script {
-      def buildAndPushImage(String contextPath, String dockerfilePath, String imageName) {
-          sh """
-            /kaniko/executor \\
-              --context=`pwd`/${contextPath} \\
-              --dockerfile=`pwd`/${dockerfilePath} \\
-              --destination=${REGISTRY_URL}/${imageName}:${IMAGE_TAG} \\
-              --skip-tls-verify=true
-          """
-        }
-      }
-    }
+def buildAndPushImage(String contextPath, String dockerfilePath, String imageName) {
+  container('kaniko') {
+    sh """
+      /kaniko/executor \
+        --context=`pwd`/${contextPath} \
+        --dockerfile=`pwd`/${dockerfilePath} \
+        --destination=${REGISTRY_URL}/${imageName}:${IMAGE_TAG} \
+        --skip-tls-verify=true
+    """
+  }
 }
