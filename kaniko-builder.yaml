@@ -9,8 +9,6 @@ spec:
     imagePullPolicy: Always
     tty: true
     command: ["cat"]
-    args:
-    - 9999999
     volumeMounts:
       - name: registry-secret
         mountPath: /kaniko/.docker
