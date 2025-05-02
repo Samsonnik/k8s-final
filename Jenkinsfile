@@ -11,7 +11,10 @@ pipeline {
       steps {
         script {
           try {
-            git branch: 'main', url: 'https://github.com/Samsonnik/k8s-final.git'
+            // Клонируем репозиторий на мастер-ноде (или любую доступную)
+            node {
+              git branch: 'main', url: 'https://github.com/Samsonnik/k8s-final.git'
+            }
           } catch (e) {
             echo "Ошибка при клонировании репозитория: ${e}"
             currentBuild.result = 'FAILURE'
@@ -39,7 +42,7 @@ pipeline {
   }
 }
 
-// 🛠 Общая функция для сборки
+// 🛠 Функция сборки образов
 def buildAndPushImage(String contextPath, String dockerfilePath, String imageName) {
   podTemplate(
     label: "kaniko-${imageName}",
