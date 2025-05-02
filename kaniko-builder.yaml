@@ -17,6 +17,10 @@ spec:
         - name: DOCKER_CONFIG
           value: /kaniko/.docker
 
+    - name: jnlp
+      image: jenkins/inbound-agent:latest
+      imagePullPolicy: IfNotPresent
+
   volumes:
     - name: registry-secret
       secret:
