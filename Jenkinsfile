@@ -28,22 +28,16 @@ pipeline {
         )]) {
           container('kaniko') {
             script {
-              // Создаём config.json вручную
-              sh '''
-                echo "{\"auths\":{\"$PRIVATE_REGISTRY\":{\"username\":\"$REGISTRY_USERNAME\",\"password\":\"$REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
-              '''
-
-              // Проверим содержимое файла
-              sh 'cat /kaniko/.docker/config.json'
-
-              // Сборка с Kaniko
-              sh """
+              sh """"
+                mkdir -p /home/jenkins/.docker
+                echo "{\"auths\":{\"$PRIVATE_REGISTRY\":{\"username\":\"$REGISTRY_USERNAME\",\"password\":\"$REGISTRY_PASSWORD\"}}}" > /home/jenkins/.docker/config.json
                 /kaniko/executor \
                   --context=`pwd`/8.images/1.front \
                   --dockerfile=`pwd`/8.images/1.front/dockerfile \
                   --destination=${IMAGE_NAME}:${IMAGE_TAG} \
                   --insecure-registries=$PRIVATE_REGISTRY \
-                  --skip-tls-verify=true
+                  --skip-tls-verify=true \
+                  --docker-config=/home/jenkins/.docker
               """
             }
           }
