@@ -25,6 +25,9 @@ helm install prometheus prometheus-community/kube-prometheus-stack --namespace m
 # jenkis
 helm install jenkins jenkinsci/jenkins --namespace jenkis -f jenkins.yaml
 
+# debug
+kubectl auth can-i get pods --namespace=app --as=system:serviceaccount:jenkis:jenkis
+
 # containerd
 docker save myapp:latest -o myapp.tar
 

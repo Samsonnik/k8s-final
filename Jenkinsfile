@@ -56,7 +56,6 @@ pipeline {
             sh """
               helm upgrade --install front 3.front \
                 --namespace app \
-                --create-namespace \
                 --set image.repository=${REGISTRY_URL}/front \
                 --set image.tag=${IMAGE_TAG}
             """
