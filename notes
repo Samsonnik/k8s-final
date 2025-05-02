@@ -1,0 +1,37 @@
+# Ingress
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.8.2/deploy/static/provider/cloud/deploy.yaml
+
+# Longhorn
+helm install longhorn longhorn/longhorn --namespace longhorn-system --create-namespace
+
+# db
+helm install postgres bitnami/postgresql
+
+# redis
+helm install redis bitnami/redis
+
+# opensearch
+helm install opensearch opensearch/opensearch --namespace logging -f opensearch.yaml
+
+# opensearch dashboard
+helm upgrade --install dashboard opensearch/opensearch-dashboards -f dashboard.yaml --namespace logging
+
+# fluetntd
+helm upgrade --install fluentd bitnami/fluentd --namespace logging -f fluentd.yaml
+
+# prometheus
+helm install prometheus prometheus-community/kube-prometheus-stack --namespace monitoring -f prometheus.yaml
+
+# jenkis
+helm install jenkins jenkinsci/jenkins --namespace jenkis -f jenkins.yaml
+
+# containerd
+docker save myapp:latest -o myapp.tar
+
+sudo ctr -n=k8s.io images import myapp.tar
+
+sudo ctr -n=k8s.io images list
+
+cd /var/lib/registry/docker/registry/v2/repositories/
+
+jenkins/inbound-agent:3307.v632ed11b_3a_c7-2

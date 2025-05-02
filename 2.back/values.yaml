@@ -1,0 +1,24 @@
+image:
+  repository: 10.43.238.235:5000/back
+  tag: "01"
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: "my-registry-secret1"
+
+service:
+  port: 8081
+
+envSecrets:
+  POSTGRES_HOST:      "postgres-postgresql"
+  POSTGRES_PORT:      "5432"
+  POSTGRES_USER:      "java_user"
+  POSTGRES_PASSWORD:  "java"
+  POSTGRES_DB:        "java_db"
+  REDIS_HOST:         "redis-master"
+  REDIS_PORT:         "6379"
+  REDIS_PASSWORD:     "redis"
+  FLUENTD_ENABLED:    "true"
+  FLUENTD_HOST:       "fluentd-aggregator.logging.svc.cluster.local"
+  FLUENTD_PORT:       "24224"
+  SERVER_PORT:        "8081"
+  DEBUG:              "true"

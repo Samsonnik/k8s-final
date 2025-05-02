@@ -1,0 +1,93 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-back-end
+  labels:
+    app.kubernetes.io/name: back-end
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: back-end
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: back-end
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      imagePullSecrets:
+        - name: {{ .Values.imagePullSecrets }}
+      containers:
+      - name: back
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+          - containerPort: 8081
+        env:
+        - name: POSTGRES_HOST
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-secret
+              key: POSTGRES_HOST
+        - name: POSTGRES_PORT
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-secret
+              key: POSTGRES_PORT
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-secret
+              key: POSTGRES_USER
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-secret
+              key: POSTGRES_PASSWORD
+        - name: POSTGRES_DB
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-secret
+              key: POSTGRES_DB
+        - name: REDIS_HOST
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-secret
+              key: REDIS_HOST
+        - name: REDIS_PORT
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-secret
+              key: REDIS_PORT
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-secret
+              key: REDIS_PASSWORD
+        - name: FLUENTD_ENABLED
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-secret
+              key: FLUENTD_ENABLED
+        - name: FLUENTD_HOST
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-secret
+              key: FLUENTD_HOST
+        - name: FLUENTD_PORT
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-secret
+              key: FLUENTD_PORT
+        - name: SERVER_PORT
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-secret
+              key: SERVER_PORT
+        - name: DEBUG
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-secret
+              key: DEBUG

@@ -1,0 +1,19 @@
+image:
+  repository: front
+  registry: "10.43.238.235:5000/"
+  tag: "01"
+  pullPolicy: Always
+
+imagePullSecrets: "my-registry-secret1"
+
+service:
+  port: 443
+
+ingress:
+  enabled: true
+  className: "nginx"
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+  path: "/"
+  host: "api.domain.com"
+  pathType: Prefix
