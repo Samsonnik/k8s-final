@@ -1,4 +1,5 @@
 pipeline {
+
   agent none
 
   environment {
@@ -39,6 +40,23 @@ pipeline {
         }
       }
     }
+
+    stage("Deploy Front") {
+      agent {
+        kubernetes {
+          yamlFile 'helm-builder.yaml'
+        }
+      }
+
+      steps {
+        git branch: 'main', url: "${GIT_URL}"
+
+        script {
+          helm upgrade --install front 3.front --namespace app
+        }
+      }
+    }
+
   }
 }
 

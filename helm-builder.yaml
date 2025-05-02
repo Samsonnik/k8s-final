@@ -1,0 +1,14 @@
+kind: Pod
+metadata:
+  labels:
+    app: helm-builder
+spec:
+  containers:
+  - name: helm
+    image: alpine/helm:3
+    imagePullPolicy: Always
+    tty: true
+    command:
+    - sleep
+    args:
+    - 9999999
