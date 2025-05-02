@@ -21,36 +21,30 @@ pipeline {
 
     stage("Build & Push Front") {
       steps {
-        script {
-          buildAndPushImage("8.images/1.front", "8.images/1.front/dockerfile", "front")
+        container('kaniko') {
+          sh """
+            /kaniko/executor \
+              --context=`pwd`/8.images/1.front \
+              --dockerfile=`pwd`/8.images/1.front/dockerfile \
+              --destination=${REGISTRY_URL}/${FRONT_IMAGE_NAME}:${IMAGE_TAG} \
+              --skip-tls-verify=true
+          """
         }
       }
     }
 
     stage("Build & Push Back") {
       steps {
-        script {
-          buildAndPushImage("8.images/2.back", "8.images/2.back/dockerfile", "back")
-        }
-      }
-    }
-  }
-
-  options {
-    disableConcurrentBuilds()
-  }
-
-  methods {
-    script {
-      def buildAndPushImage(String contextPath, String dockerfilePath, String imageName) {
+        container('kaniko') {
           sh """
-            /kaniko/executor \\
-              --context=`pwd`/${contextPath} \\
-              --dockerfile=`pwd`/${dockerfilePath} \\
-              --destination=${REGISTRY_URL}/${imageName}:${IMAGE_TAG} \\
+            /kaniko/executor \
+              --context=`pwd`/8.images/2.back \
+              --dockerfile=`pwd`/8.images/2.back/dockerfile \
+              --destination=${REGISTRY_URL}/${BACK_IMAGE_NAME}:${IMAGE_TAG} \
               --skip-tls-verify=true
           """
         }
       }
     }
+  }
 }
