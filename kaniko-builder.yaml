@@ -11,6 +11,7 @@ spec:
     volumeMounts:
       - name: registry-secret
         mountPath: /kaniko/.docker
+        readOnly: false
   volumes:
     - name: registry-secret
       secret:
