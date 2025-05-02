@@ -1,12 +1,24 @@
 pipeline {
-  agent none
+  agent {
+    kubernetes {
+      yamlFile 'kaniko-builder.yaml'
+    }
+  }
 
   environment {
     REGISTRY_URL = "docker-registry.docker-registry.svc.cluster.local:5000"
-    IMAGE_TAG = "latest"
+    FRONT_IMAGE_NAME = "front"
+    BACK_IMAGE_NAME = "back"
+    IMAGE_TAG = "01"
   }
 
   stages {
+    stage("Checkout Code") {
+      steps {
+        git branch: 'main', url: 'https://github.com/Samsonnik/k8s-final.git'
+      }
+    }
+
     stage("Build & Push Front") {
       steps {
         script {
@@ -23,33 +35,20 @@ pipeline {
       }
     }
   }
+
+  options {
+    disableConcurrentBuilds()
+  }
 }
 
-// 🛠 Функция сборки и пушилки
 def buildAndPushImage(String contextPath, String dockerfilePath, String imageName) {
-  podTemplate(
-    label: "kaniko-${imageName}",
-    containers: [
-      containerTemplate(name: 'jnlp', image: 'jenkins/inbound-agent:latest')
-    ],
-    // Читаем YAML из файла как строку
-    podYaml: readFile('kaniko-builder.yaml')
-  ) {
-    node("kaniko-${imageName}") {
-      stage("Clone and Build ${imageName}") {
-        git branch: 'main', url: 'https://github.com/Samsonnik/k8s-final.git'
-
-        container('kaniko') {
-          sh """
-            /kaniko/executor \
-              --context=`pwd`/${contextPath} \
-              --dockerfile=`pwd`/${dockerfilePath} \
-              --destination=${env.REGISTRY_URL}/${imageName}:${env.IMAGE_TAG} \
-              --insecure-registries=${env.REGISTRY_URL} \
-              --skip-tls-verify=true
-          """
-        }
-      }
-    }
+  container('kaniko') {
+    sh """
+      /kaniko/executor \\
+        --context=`pwd`/${contextPath} \\
+        --dockerfile=`pwd`/${dockerfilePath} \\
+        --destination=${REGISTRY_URL}/${imageName}:${IMAGE_TAG} \\
+        --skip-tls-verify=true
+    """
   }
 }
