@@ -31,12 +31,12 @@ pipeline {
               sh """
                 mkdir -p /home/jenkins/.docker
                 echo "{\"auths\":{\"$PRIVATE_REGISTRY\":{\"username\":\"$REGISTRY_USERNAME\",\"password\":\"$REGISTRY_PASSWORD\"}}}" > /home/jenkins/.docker/config.json
+                export DOCKER_CONFIG=/home/jenkins/.docker
                 /kaniko/executor \
                   --context=`pwd`/8.images/1.front \
                   --dockerfile=`pwd`/8.images/1.front/dockerfile \
                   --destination=${IMAGE_NAME}:${IMAGE_TAG} \
                   --skip-tls-verify=true \
-                  --docker-config=/home/jenkins/.docker
               """
             }
           }
