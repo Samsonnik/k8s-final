@@ -11,11 +11,7 @@ spec:
     command:
       - /busybox/sh
       - -c
-      - |
-        while true; do
-          echo "Kaniko container is alive..."
-          sleep 10
-        done
+      - sleep 3600
     volumeMounts:
       - name: registry-secret
         mountPath: /kaniko/.docker
