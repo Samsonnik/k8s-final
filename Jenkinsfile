@@ -25,18 +25,17 @@ pipeline {
           ]
         ) {
           node('kaniko-front') {
-            stage("Clone and Build Front") {
-              git branch: 'main', url: 'https://github.com/Samsonnik/k8s-final.git'
+            git branch: 'main', url: 'https://github.com/Samsonnik/k8s-final.git'
 
-              container('kaniko') {
-                sh """
-                  /kaniko/executor \
-                    --context=`pwd`/8.images/1.front \
-                    --dockerfile=`pwd`/8.images/1.front/dockerfile \
-                    --destination=${REGISTRY_URL}/${IMAGE_TAG} \
-                    --skip-tls-verify=true
-                """
-              }
+            container('kaniko') {
+              sh """
+                /kaniko/executor \
+                  --context=`pwd`/8.images/1.front \
+                  --dockerfile=`pwd`/8.images/1.front/dockerfile \
+                  --destination=${REGISTRY_URL}/front:${IMAGE_TAG} \
+                  --insecure-registries=${REGISTRY_URL} \
+                  --skip-tls-verify=true
+              """
             }
           }
         }
@@ -61,18 +60,17 @@ pipeline {
           ]
         ) {
           node('kaniko-back') {
-            stage("Clone and Build Back") {
-              git branch: 'main', url: 'https://github.com/Samsonnik/k8s-final.git'
+            git branch: 'main', url: 'https://github.com/Samsonnik/k8s-final.git'
 
-              container('kaniko') {
-                sh """
-                  /kaniko/executor \
-                    --context=`pwd`/8.images/2.back \
-                    --dockerfile=`pwd`/8.images/2.back/dockerfile \
-                    --destination=${REGISTRY_URL}/${IMAGE_TAG} \
-                    --skip-tls-verify=true
-                """
-              }
+            container('kaniko') {
+              sh """
+                /kaniko/executor \
+                  --context=`pwd`/8.images/2.back \
+                  --dockerfile=`pwd`/8.images/2.back/dockerfile \
+                  --destination=${REGISTRY_URL}/back:${IMAGE_TAG} \
+                  --insecure-registries=${REGISTRY_URL} \
+                  --skip-tls-verify=true
+              """
             }
           }
         }
