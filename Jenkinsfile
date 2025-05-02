@@ -48,5 +48,6 @@ def buildAndPushImage(String contextPath, String dockerfilePath, String imageNam
         --insecure-registries=${REGISTRY_URL} \\
         --skip-tls-verify=true
     """
+    }
   }
 }
