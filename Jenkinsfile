@@ -1,5 +1,5 @@
 pipeline {
-  agent none
+  agent none   // ← не указываем агент глобально
 
   environment {
     REGISTRY_URL = "docker-registry.docker-registry.svc.cluster.local:5000"
@@ -8,71 +8,47 @@ pipeline {
 
   stages {
     stage("Build & Push Front") {
-      steps {
-        podTemplate(
-          label: 'kaniko-front',
-          containers: [
-            containerTemplate(name: 'jnlp', image: 'jenkins/inbound-agent:latest'),
-            containerTemplate(
-              name: 'kaniko',
-              image: 'gcr.io/kaniko-project/executor:debug',
-              command: '/busybox/sh',
-              args: '-c while true; do echo Waiting...; sleep 10; done'
-            )
-          ],
-          volumes: [
-            secretVolume(mountPath: '/kaniko/.docker', secretName: 'my-registry-secret')
-          ]
-        ) {
-          node('kaniko-front') {
-            git branch: 'main', url: 'https://github.com/Samsonnik/k8s-final.git'
+      agent {
+        kubernetes {
+          yamlFile 'kaniko-builder.yaml'   // 📁 используем YAML
+          containerName 'jnlp'            // 🔧 указываем, что основной контейнер — jnlp
+        }
+      }
 
-            container('kaniko') {
-              sh """
-                /kaniko/executor \
-                  --context=`pwd`/8.images/1.front \
-                  --dockerfile=`pwd`/8.images/1.front/dockerfile \
-                  --destination=${REGISTRY_URL}/front:${IMAGE_TAG} \
-                  --insecure-registries=${REGISTRY_URL} \
-                  --skip-tls-verify=true
-              """
-            }
-          }
+      steps {
+        git branch: 'main', url: 'https://github.com/Samsonnik/k8s-final.git'
+
+        container('kaniko') {   // 🛠 переключаемся на sidecar-контейнер kaniko
+          sh """
+            /kaniko/executor \
+              --context=`pwd`/8.images/1.front \
+              --dockerfile=`pwd`/8.images/1.front/dockerfile \
+              --destination=${REGISTRY_URL}/front:${IMAGE_TAG} \
+              --skip-tls-verify=true
+          """
         }
       }
     }
 
     stage("Build & Push Back") {
-      steps {
-        podTemplate(
-          label: 'kaniko-back',
-          containers: [
-            containerTemplate(name: 'jnlp', image: 'jenkins/inbound-agent:latest'),
-            containerTemplate(
-              name: 'kaniko',
-              image: 'gcr.io/kaniko-project/executor:debug',
-              command: '/busybox/sh',
-              args: '-c while true; do echo Waiting...; sleep 10; done'
-            )
-          ],
-          volumes: [
-            secretVolume(mountPath: '/kaniko/.docker', secretName: 'my-registry-secret')
-          ]
-        ) {
-          node('kaniko-back') {
-            git branch: 'main', url: 'https://github.com/Samsonnik/k8s-final.git'
+      agent {
+        kubernetes {
+          yamlFile 'kaniko-builder.yaml'
+          containerName 'jnlp'
+        }
+      }
 
-            container('kaniko') {
-              sh """
-                /kaniko/executor \
-                  --context=`pwd`/8.images/2.back \
-                  --dockerfile=`pwd`/8.images/2.back/dockerfile \
-                  --destination=${REGISTRY_URL}/back:${IMAGE_TAG} \
-                  --insecure-registries=${REGISTRY_URL} \
-                  --skip-tls-verify=true
-              """
-            }
-          }
+      steps {
+        git branch: 'main', url: 'https://github.com/Samsonnik/k8s-final.git'
+
+        container('kaniko') {
+          sh """
+            /kaniko/executor \
+              --context=`pwd`/8.images/2.back \
+              --dockerfile=`pwd`/8.images/2.back/dockerfile \
+              --destination=${REGISTRY_URL}/back:${IMAGE_TAG} \
+              --skip-tls-verify=true
+          """
         }
       }
     }
