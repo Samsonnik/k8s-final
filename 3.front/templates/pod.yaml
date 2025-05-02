@@ -9,8 +9,7 @@ spec:
     - name: {{ .Values.imagePullSecrets | quote }}
   containers:
   - name: front
-    image: "{{ .Values.image.registry }}{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-#    image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+    image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
     imagePullPolicy: {{ .Values.image.pullPolicy }}
     volumeMounts:
     - name: config-volume

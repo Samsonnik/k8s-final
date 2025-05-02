@@ -62,6 +62,22 @@ pipeline {
          }
        }
      }
+
+      steps {
+        git branch: 'main', url: "${GIT_URL}"
+
+        script {
+          container('helm') {
+          sh """
+            helm upgrade --install front 2.back \
+              --namespace app \
+              --set image.repository=docker-registry.docker-registry.svc.cluster.local:5000/back \
+              --set image.tag=01
+          """
+         }
+       }
+     }
+
    }
 
   }
