@@ -28,7 +28,7 @@ pipeline {
         )]) {
           container('kaniko') {
             script {
-              sh """"
+              sh """
                 mkdir -p /home/jenkins/.docker
                 echo "{\"auths\":{\"$PRIVATE_REGISTRY\":{\"username\":\"$REGISTRY_USERNAME\",\"password\":\"$REGISTRY_PASSWORD\"}}}" > /home/jenkins/.docker/config.json
                 /kaniko/executor \
