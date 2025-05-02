@@ -9,7 +9,15 @@ pipeline {
   stages {
     stage('Checkout Code') {
       steps {
-        git branch: 'main', url: 'https://github.com/Samsonnik/k8s-final.git'
+        script {
+          try {
+            git branch: 'main', url: 'https://github.com/Samsonnik/k8s-final.git'
+          } catch (e) {
+            echo "Ошибка при клонировании репозитория: ${e}"
+            currentBuild.result = 'FAILURE'
+            throw e
+          }
+        }
       }
     }
 
@@ -31,6 +39,7 @@ pipeline {
   }
 }
 
+// 🛠 Общая функция для сборки
 def buildAndPushImage(String contextPath, String dockerfilePath, String imageName) {
   podTemplate(
     label: "kaniko-${imageName}",
@@ -39,10 +48,10 @@ def buildAndPushImage(String contextPath, String dockerfilePath, String imageNam
     node("kaniko-${imageName}") {
       container('kaniko') {
         sh """
-          /kaniko/executor \\
-            --context=`pwd`/${contextPath} \\
-            --dockerfile=`pwd`/${dockerfilePath} \\
-            --destination=${env.REGISTRY_URL}/${imageName}:${env.IMAGE_TAG} \\
+          /kaniko/executor \
+            --context=`pwd`/${contextPath} \
+            --dockerfile=`pwd`/${dockerfilePath} \
+            --destination=${env.REGISTRY_URL}/${imageName}:${env.IMAGE_TAG} \
             --skip-tls-verify=true
         """
       }
