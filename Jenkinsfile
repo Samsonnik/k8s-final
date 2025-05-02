@@ -25,11 +25,17 @@ pipeline {
   }
 }
 
+// 🛠 Функция сборки и пушилки
 def buildAndPushImage(String contextPath, String dockerfilePath, String imageName) {
   podTemplate(
-    yamlFile: 'kaniko-builder.yaml'
+    label: "kaniko-${imageName}",
+    containers: [
+      containerTemplate(name: 'jnlp', image: 'jenkins/inbound-agent:latest')
+    ],
+    // Читаем YAML из файла как строку
+    podYaml: readFile('kaniko-builder.yaml')
   ) {
-    node {
+    node("kaniko-${imageName}") {
       stage("Clone and Build ${imageName}") {
         git branch: 'main', url: 'https://github.com/Samsonnik/k8s-final.git'
 
@@ -39,6 +45,7 @@ def buildAndPushImage(String contextPath, String dockerfilePath, String imageNam
               --context=`pwd`/${contextPath} \
               --dockerfile=`pwd`/${dockerfilePath} \
               --destination=${env.REGISTRY_URL}/${imageName}:${env.IMAGE_TAG} \
+              --insecure-registries=${env.REGISTRY_URL} \
               --skip-tls-verify=true
           """
         }
