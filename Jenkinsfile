@@ -42,7 +42,6 @@ pipeline {
   }
 }
 
-// 🛠 Функция сборки (выносим до pipeline)
 def buildAndPushImage(String contextPath, String dockerfilePath, String imageName) {
   container('kaniko') {
     sh """
@@ -50,7 +49,9 @@ def buildAndPushImage(String contextPath, String dockerfilePath, String imageNam
         --context=`pwd`/${contextPath} \\
         --dockerfile=`pwd`/${dockerfilePath} \\
         --destination=${REGISTRY_URL}/${imageName}:${IMAGE_TAG} \\
-        --skip-tls-verify=true
+        --skip-tls-verify=true \\
+        --cache=true \\
+        --cache-repo=${REGISTRY_URL}/kaniko-cache/${imageName}
     """
   }
 }
