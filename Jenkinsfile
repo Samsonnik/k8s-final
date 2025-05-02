@@ -3,7 +3,7 @@ pipeline {
 
   environment {
     REGISTRY_URL = "docker-registry.docker-registry.svc.cluster.local:5000"
-    IMAGE_TAG = "latest"
+    IMAGE_TAG = "01"
     GIT_URL = "https://github.com/Samsonnik/k8s-final.git"
   }
 
@@ -16,9 +16,10 @@ pipeline {
       }
 
       steps {
-        git branch: 'main', url: ${GIT_URL}
+        git branch: 'main', url: "${GIT_URL}"
+
         script {
-          buildAndPushImage("8.images/2.back", "8.images/2.back/dockerfile", "back")
+          buildAndPushImage("8.images/1.front", "8.images/1.front/dockerfile", "front")
         }
       }
     }
@@ -29,15 +30,19 @@ pipeline {
           yamlFile 'kaniko-builder.yaml'
         }
       }
+
       steps {
-        git branch: 'main', url: ${GIT_URL}
+        git branch: 'main', url: "${GIT_URL}"
+
         script {
           buildAndPushImage("8.images/2.back", "8.images/2.back/dockerfile", "back")
-        }       
+        }
       }
     }
   }
+}
 
+// 🛠 Функция сборки (выносим до pipeline)
 def buildAndPushImage(String contextPath, String dockerfilePath, String imageName) {
   container('kaniko') {
     sh """
@@ -45,9 +50,7 @@ def buildAndPushImage(String contextPath, String dockerfilePath, String imageNam
         --context=`pwd`/${contextPath} \\
         --dockerfile=`pwd`/${dockerfilePath} \\
         --destination=${REGISTRY_URL}/${imageName}:${IMAGE_TAG} \\
-        --insecure-registries=${REGISTRY_URL} \\
         --skip-tls-verify=true
     """
-    }
   }
 }
