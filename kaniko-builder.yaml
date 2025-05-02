@@ -9,7 +9,13 @@ spec:
     imagePullPolicy: Always
     tty: true
     command:
-    - /busybox/cat
+      - /busybox/sh
+      - -c
+      - |
+        while true; do
+          echo "Kaniko container is alive..."
+          sleep 10
+        done
     volumeMounts:
       - name: registry-secret
         mountPath: /kaniko/.docker
