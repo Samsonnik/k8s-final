@@ -1,5 +1,4 @@
 pipeline {
-
   agent none
 
   environment {
@@ -9,6 +8,7 @@ pipeline {
   }
 
   stages {
+
     stage("Build & Push Front") {
       agent {
         kubernetes {
@@ -53,15 +53,18 @@ pipeline {
 
         script {
           container('helm') {
-          sh """
-            helm upgrade --install front 3.front \
-              --namespace app \
-              --set image.repository=docker-registry.docker-registry.svc.cluster.local:5000/front \
-              --set image.tag=01
-          """
-         }
-       }
-     }
+            sh """
+              helm upgrade --install front-release helm/front \
+                --namespace app \
+                --create-namespace \
+                --set image.repository=${REGISTRY_URL}/front \
+                --set image.tag=${IMAGE_TAG} \
+                --set image.pullPolicy=IfNotPresent
+            """
+          }
+        }
+      }
+    }
 
     stage("Deploy Back") {
       agent {
@@ -75,32 +78,30 @@ pipeline {
 
         script {
           container('helm') {
-          sh """
-            helm upgrade --install front 2.back \
-              --namespace app \
-              --set image.repository=docker-registry.docker-registry.svc.cluster.local:5000/back \
-              --set image.tag=01
-          """
-         }
-       }
-     }
-
-   }
-
+            sh """
+              helm upgrade --install back-release helm/back \
+                --namespace app \
+                --set image.repository=${REGISTRY_URL}/back \
+                --set image.tag=${IMAGE_TAG} \
+                --set image.pullPolicy=IfNotPresent
+            """
+          }
+        }
+      }
+    }
   }
 }
 
 def buildAndPushImage(String contextPath, String dockerfilePath, String imageName) {
   container('kaniko') {
     sh """
-      /kaniko/executor \\
-        --context=`pwd`/${contextPath} \\
-        --dockerfile=`pwd`/${dockerfilePath} \\
-        --destination=${REGISTRY_URL}/${imageName}:${IMAGE_TAG} \\
-        --skip-tls-verify=true \\
-        --cache=true \\
-        --cache-repo=${REGISTRY_URL}/kaniko-cache/${imageName}
+      /kaniko/executor \
+        --context=`pwd`/${contextPath} \
+        --dockerfile=`pwd`/${dockerfilePath} \
+        --destination=${env.REGISTRY_URL}/${imageName}:${env.IMAGE_TAG} \
+        --skip-tls-verify=true \
+        --cache=true \
+        --cache-repo=${env.REGISTRY_URL}/kaniko-cache/${imageName}
     """
   }
- }
 }
