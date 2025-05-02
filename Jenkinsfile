@@ -19,21 +19,15 @@ pipeline {
       }
     }
 
-#    stage("Build & Push Front") {
-#      steps {
-#        script {
-#          buildAndPushImage("8.images/1.front", "8.images/1.front/dockerfile", "front")
-#        }
-#      }
-#    }
-
-    stage("Build & Push Back") {
+    stage("Build & Push Front") {
       steps {
+        script {
+          buildAndPushImage("8.images/1.front", "8.images/1.front/dockerfile", "front")
+        }
         script {
           buildAndPushImage("8.images/2.back", "8.images/2.back/dockerfile", "back")
         }
-      }
-    }
+     }
   }
 
   options {
