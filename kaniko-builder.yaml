@@ -12,16 +12,15 @@ spec:
     - name: kaniko
       image: gcr.io/kaniko-project/executor:latest
       imagePullPolicy: Always
-      args: ["run", "--dockerfile=/dev/null"]
       volumeMounts:
-        - name: jenkins-docker-cfg
-          mountPath: /home/jenkins/.docker
+        - name: registry-secret
+          mountPath: /kaniko/.docker
           readOnly: true
       env:
         - name: DOCKER_CONFIG
-          value: /home/jenkins/.docker
+          value: /kaniko/.docker
 
   volumes:
-    - name: jenkins-docker-cfg
+    - name: registry-secret
       secret:
         secretName: my-registry-secret
