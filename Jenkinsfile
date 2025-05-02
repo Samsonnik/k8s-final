@@ -54,12 +54,11 @@ pipeline {
         script {
           container('helm') {
             sh """
-              helm upgrade --install front-release helm/front \
+              helm upgrade --install front 3.front \
                 --namespace app \
                 --create-namespace \
                 --set image.repository=${REGISTRY_URL}/front \
-                --set image.tag=${IMAGE_TAG} \
-                --set image.pullPolicy=IfNotPresent
+                --set image.tag=${IMAGE_TAG}
             """
           }
         }
@@ -79,11 +78,10 @@ pipeline {
         script {
           container('helm') {
             sh """
-              helm upgrade --install back-release helm/back \
+              helm upgrade --install back 2.back \
                 --namespace app \
                 --set image.repository=${REGISTRY_URL}/back \
-                --set image.tag=${IMAGE_TAG} \
-                --set image.pullPolicy=IfNotPresent
+                --set image.tag=${IMAGE_TAG}
             """
           }
         }
