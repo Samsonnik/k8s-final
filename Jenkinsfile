@@ -63,6 +63,13 @@ pipeline {
        }
      }
 
+    stage("Deploy Back") {
+      agent {
+        kubernetes {
+          yamlFile 'helm-builder.yaml'
+        }
+      }
+
       steps {
         git branch: 'main', url: "${GIT_URL}"
 
