@@ -11,7 +11,6 @@ pipeline {
       agent {
         kubernetes {
           yamlFile 'kaniko-builder.yaml'   // 📁 используем YAML
-          containerName 'jnlp'            // 🔧 указываем, что основной контейнер — jnlp
         }
       }
 
@@ -34,7 +33,6 @@ pipeline {
       agent {
         kubernetes {
           yamlFile 'kaniko-builder.yaml'
-          containerName 'jnlp'
         }
       }
 
