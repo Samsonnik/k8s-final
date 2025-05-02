@@ -23,8 +23,6 @@ pipeline {
               --context=`pwd`/8.images/1.front \
               --dockerfile=`pwd`/8.images/1.front/dockerfile \
               --destination=${REGISTRY_URL}/front:${IMAGE_TAG} \
-              --cache=true \
-              --cache-repo="$PRIVATE_REGISTRY/cache/front" \
               --skip-tls-verify=true
           """
         }
@@ -47,8 +45,6 @@ pipeline {
               --context=`pwd`/8.images/2.back \
               --dockerfile=`pwd`/8.images/2.back/dockerfile \
               --destination=${REGISTRY_URL}/back:${IMAGE_TAG} \
-              --cache=true \
-              --cache-repo="$PRIVATE_REGISTRY/cache/back" \
               --skip-tls-verify=true
           """
         }
