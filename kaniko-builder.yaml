@@ -5,16 +5,22 @@ metadata:
     app: kaniko-builder
 spec:
   containers:
-  - name: kaniko
-    image: gcr.io/kaniko-project/executor:debug
-    imagePullPolicy: Always
-    command:
-    - sleep
-    args:
-    - 9999999
-    volumeMounts:
-      - name: jenkins-docker-cfg
-        mountPath: /kaniko/.docker
+    - name: jnlp
+      image: jenkins/inbound-agent:latest
+      imagePullPolicy: IfNotPresent
+
+    - name: kaniko
+      image: gcr.io/kaniko-project/executor:debug
+      imagePullPolicy: Always
+      tty: true
+      volumeMounts:
+        - name: registry-secret
+          mountPath: /kaniko/.docker
+          readOnly: true
+      env:
+        - name: DOCKER_CONFIG
+          value: /kaniko/.docker
+
   volumes:
     - name: registry-secret
       secret:
