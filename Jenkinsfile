@@ -27,13 +27,14 @@ pipeline {
 
 def buildAndPushImage(String contextPath, String dockerfilePath, String imageName) {
   podTemplate(
-    // 🚀 Каждый раз создаём новый под по шаблону
     label: "kaniko-${imageName}",
     containers: [
       containerTemplate(name: 'jnlp', image: 'jenkins/inbound-agent:latest')
     ],
-    // 🔍 Читаем YAML как строку
-    podYaml: readFile('kaniko-builder.yaml')
+    // 🔁 Читаем YAML как строку
+    podYaml: """
+${readFile('kaniko-builder.yaml')}
+"""
   ) {
     node("kaniko-${imageName}") {
       stage("Clone and Build ${imageName}") {
