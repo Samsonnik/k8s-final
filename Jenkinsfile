@@ -30,7 +30,6 @@ pipeline {
             script {
               // Создаём config.json вручную
               sh '''
-                mkdir -p /kaniko/.docker
                 echo "{\"auths\":{\"$PRIVATE_REGISTRY\":{\"username\":\"$REGISTRY_USERNAME\",\"password\":\"$REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
               '''
 
