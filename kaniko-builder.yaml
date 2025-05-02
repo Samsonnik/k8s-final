@@ -1,4 +1,7 @@
 kind: Pod
+metadata:
+  labels:
+    app: kaniko-builder
 spec:
   containers:
   - name: kaniko
