@@ -35,7 +35,6 @@ pipeline {
                   --context=`pwd`/8.images/1.front \
                   --dockerfile=`pwd`/8.images/1.front/dockerfile \
                   --destination=${IMAGE_NAME}:${IMAGE_TAG} \
-                  --insecure-registries=$PRIVATE_REGISTRY \
                   --skip-tls-verify=true \
                   --docker-config=/home/jenkins/.docker
               """
