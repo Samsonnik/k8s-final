@@ -24,10 +24,16 @@ pipeline {
         script {
           buildAndPushImage("8.images/1.front", "8.images/1.front/dockerfile", "front")
         }
+      }
+    }
+
+    stage("Build & Push Back") {
+      steps {
         script {
           buildAndPushImage("8.images/2.back", "8.images/2.back/dockerfile", "back")
         }
-     }
+      }
+    }
   }
 
   options {
@@ -38,10 +44,10 @@ pipeline {
 def buildAndPushImage(String contextPath, String dockerfilePath, String imageName) {
   container('kaniko') {
     sh """
-      /kaniko/executor \
-        --context=`pwd`/${contextPath} \
-        --dockerfile=`pwd`/${dockerfilePath} \
-        --destination=${REGISTRY_URL}/${imageName}:${IMAGE_TAG} \
+      /kaniko/executor \\
+        --context=`pwd`/${contextPath} \\
+        --dockerfile=`pwd`/${dockerfilePath} \\
+        --destination=${REGISTRY_URL}/${imageName}:${IMAGE_TAG} \\
         --skip-tls-verify=true
     """
   }
