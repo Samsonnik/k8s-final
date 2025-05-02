@@ -102,4 +102,5 @@ def buildAndPushImage(String contextPath, String dockerfilePath, String imageNam
         --cache-repo=${REGISTRY_URL}/kaniko-cache/${imageName}
     """
   }
+ }
 }
