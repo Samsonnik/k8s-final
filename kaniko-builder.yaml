@@ -8,14 +8,9 @@ spec:
     image: gcr.io/kaniko-project/executor:debug
     imagePullPolicy: Always
     tty: true
-    command:
-      - /busybox/sh
-      - -c
-      - sleep 3600
     volumeMounts:
       - name: registry-secret
         mountPath: /kaniko/.docker
-        readOnly: false
   volumes:
     - name: registry-secret
       secret:
