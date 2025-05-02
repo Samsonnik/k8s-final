@@ -1,5 +1,5 @@
 pipeline {
-  agent none   // ← не указываем агент глобально
+  agent none
 
   environment {
     REGISTRY_URL = "docker-registry.docker-registry.svc.cluster.local:5000"
@@ -10,19 +10,21 @@ pipeline {
     stage("Build & Push Front") {
       agent {
         kubernetes {
-          yamlFile 'kaniko-builder.yaml'   // 📁 используем YAML
+          yamlFile 'kaniko-builder.yaml'
         }
       }
 
       steps {
         git branch: 'main', url: 'https://github.com/Samsonnik/k8s-final.git'
 
-        container('kaniko') {   // 🛠 переключаемся на sidecar-контейнер kaniko
+        container('kaniko') {
           sh """
             /kaniko/executor \
               --context=`pwd`/8.images/1.front \
               --dockerfile=`pwd`/8.images/1.front/dockerfile \
               --destination=${REGISTRY_URL}/front:${IMAGE_TAG} \
+              --cache=true \
+              --cache-repo="$PRIVATE_REGISTRY/cache/front" \
               --skip-tls-verify=true
           """
         }
@@ -45,6 +47,8 @@ pipeline {
               --context=`pwd`/8.images/2.back \
               --dockerfile=`pwd`/8.images/2.back/dockerfile \
               --destination=${REGISTRY_URL}/back:${IMAGE_TAG} \
+              --cache=true \
+              --cache-repo="$PRIVATE_REGISTRY/cache/back" \
               --skip-tls-verify=true
           """
         }
