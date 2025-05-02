@@ -7,7 +7,7 @@ pipeline {
   }
 
   stages {
-    stage('Build Front') {
+    stage("Build & Push Front") {
       steps {
         script {
           buildAndPushImage("8.images/1.front", "8.images/1.front/dockerfile", "front")
@@ -15,7 +15,7 @@ pipeline {
       }
     }
 
-    stage('Build Back') {
+    stage("Build & Push Back") {
       steps {
         script {
           buildAndPushImage("8.images/2.back", "8.images/2.back/dockerfile", "back")
@@ -27,15 +27,10 @@ pipeline {
 
 def buildAndPushImage(String contextPath, String dockerfilePath, String imageName) {
   podTemplate(
-    label: "kaniko-${imageName}",
-    containers: [
-      containerTemplate(name: 'jnlp', image: 'jenkins/inbound-agent:latest')
-    ],
-    // Загружаем YAML как строку
-    podYaml: readFile('kaniko-builder.yaml')
+    yamlFile: 'kaniko-builder.yaml'
   ) {
-    node("kaniko-${imageName}") {
-      stage("Clone & Build ${imageName}") {
+    node {
+      stage("Clone and Build ${imageName}") {
         git branch: 'main', url: 'https://github.com/Samsonnik/k8s-final.git'
 
         container('kaniko') {
@@ -44,7 +39,6 @@ def buildAndPushImage(String contextPath, String dockerfilePath, String imageNam
               --context=`pwd`/${contextPath} \
               --dockerfile=`pwd`/${dockerfilePath} \
               --destination=${env.REGISTRY_URL}/${imageName}:${env.IMAGE_TAG} \
-              --insecure-registries=${env.REGISTRY_URL} \
               --skip-tls-verify=true
           """
         }
