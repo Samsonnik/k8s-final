@@ -52,15 +52,17 @@ pipeline {
         git branch: 'main', url: "${GIT_URL}"
 
         script {
+          container('helm') {
           sh """ 
             helm upgrade --install front 3.front \
               --namespace app \
               --set image.repository=docker-registry.docker-registry.svc.cluster.local:5000/front \
               --set image.tag=01
           """
-        }
-      }
-    }
+         }
+       }
+     }
+   }
 
   }
 }
