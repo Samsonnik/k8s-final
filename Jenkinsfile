@@ -7,23 +7,6 @@ pipeline {
   }
 
   stages {
-    stage('Checkout Code') {
-      steps {
-        script {
-          try {
-            // Клонируем репозиторий на мастер-ноде (или любую доступную)
-            node {
-              git branch: 'main', url: 'https://github.com/Samsonnik/k8s-final.git'
-            }
-          } catch (e) {
-            echo "Ошибка при клонировании репозитория: ${e}"
-            currentBuild.result = 'FAILURE'
-            throw e
-          }
-        }
-      }
-    }
-
     stage('Build Front') {
       steps {
         script {
@@ -42,21 +25,25 @@ pipeline {
   }
 }
 
-// 🛠 Функция сборки образов
 def buildAndPushImage(String contextPath, String dockerfilePath, String imageName) {
   podTemplate(
     label: "kaniko-${imageName}",
     yamlFile: 'kaniko-builder.yaml'
   ) {
     node("kaniko-${imageName}") {
-      container('kaniko') {
-        sh """
-          /kaniko/executor \
-            --context=`pwd`/${contextPath} \
-            --dockerfile=`pwd`/${dockerfilePath} \
-            --destination=${env.REGISTRY_URL}/${imageName}:${env.IMAGE_TAG} \
-            --skip-tls-verify=true
-        """
+      stage("Clone and Build ${imageName}") {
+        git branch: 'main', url: 'https://github.com/Samsonnik/k8s-final.git'
+
+        container('kaniko') {
+          sh """
+            /kaniko/executor \
+              --context=`pwd`/${contextPath} \
+              --dockerfile=`pwd`/${dockerfilePath} \
+              --destination=${env.REGISTRY_URL}/${imageName}:${env.IMAGE_TAG} \
+              --insecure-registries=${env.REGISTRY_URL} \
+              --skip-tls-verify=true
+          """
+        }
       }
     }
   }
