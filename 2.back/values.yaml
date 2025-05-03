@@ -1,9 +1,9 @@
 image:
   repository: 10.43.238.235:5000/back
   tag: "01"
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
 
-imagePullSecrets: "my-registry-secret"
+imagePullSecrets: "my-registry-secret1"
 
 service:
   port: 8081
