@@ -12,12 +12,23 @@ pipeline {
     stage("Build & Push Front") {
       agent {
         kubernetes {
-          yamlFile 'kaniko-builder.yaml'
+          yamlFile 'agent.yaml'
         }
       }
 
       steps {
         git branch: 'main', url: "${GIT_URL}"
+      }
+    }
+
+    stage("Build & Push Front") {
+      agent {
+        kubernetes {
+          yamlFile 'kaniko-builder.yaml'
+        }
+      }
+
+      steps {
         script {
           buildAndPushImage("8.images/1.front", "8.images/1.front/dockerfile", "front")
         }

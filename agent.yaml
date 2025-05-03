@@ -1,0 +1,22 @@
+kind: Pod
+metadata:
+  labels:
+    app: kaniko-builder
+spec:
+  containers:
+  - name: agent
+    image: jenkins/inbound-agent:3307.v632ed11b_3a_c7-2
+    imagePullPolicy: Always
+    tty: true
+    command:
+    - sleep
+    args:
+    - 9999999
+    volumeMounts:
+      - name: workspace
+        mountPath: /workspace
+        readOnly: false
+  volumes:
+    - name: workspace
+      persistentVolumeClaim:
+        claimName: builder-pvc
