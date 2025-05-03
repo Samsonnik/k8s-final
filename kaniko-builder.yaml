@@ -3,6 +3,8 @@ metadata:
   labels:
     app: kaniko-builder
 spec:
+  securityContext:
+    fsGroup: 1000
   containers:
   - name: kaniko
     image: gcr.io/kaniko-project/executor:debug
