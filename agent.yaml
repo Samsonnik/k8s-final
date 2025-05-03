@@ -1,7 +1,7 @@
 kind: Pod
 metadata:
   labels:
-    app: kaniko-builder
+    app: agent
 spec:
   containers:
   - name: agent
@@ -16,6 +16,10 @@ spec:
       - name: workspace
         mountPath: /workspace
         readOnly: false
+    env:
+    - name: WORKSPACE
+      value: /workspace
+    workingDir: /workspace
   volumes:
     - name: workspace
       persistentVolumeClaim:
