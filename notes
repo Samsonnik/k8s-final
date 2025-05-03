@@ -44,3 +44,5 @@ kubectl create secret docker-registry my-registry-secret \
   --docker-username=evgen \
   --docker-password=evgen \
   --namespace=app
+
+/home/jenkins/agent
