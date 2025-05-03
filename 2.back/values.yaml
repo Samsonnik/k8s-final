@@ -3,7 +3,7 @@ image:
   tag: "01"
   pullPolicy: Always
 
-imagePullSecrets: "regcred"
+imagePullSecrets: "my-registry-secret"
 
 service:
   port: 8081

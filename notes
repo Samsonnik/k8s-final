@@ -38,3 +38,9 @@ sudo ctr -n=k8s.io images list
 cd /var/lib/registry/docker/registry/v2/repositories/
 
 jenkins/inbound-agent:3307.v632ed11b_3a_c7-2
+
+kubectl create secret docker-registry my-registry-secret \
+  --docker-server=docker-registry.docker-registry.svc.cluster.local:5000 \
+  --docker-username=evgen \
+  --docker-password=evgen \
+  --namespace=app

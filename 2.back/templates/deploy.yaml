@@ -18,8 +18,7 @@ spec:
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
       imagePullSecrets:
-#        - name: {{ .Values.imagePullSecrets }}
-        - name: regcred
+      - name: {{ .Values.imagePullSecrets }}
       containers:
       - name: back
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
