@@ -16,7 +16,7 @@ spec:
       - name: registry-secret
         mountPath: /kaniko/.docker
       - name: workspace
-        mountPath: /home/jenkins/agent/workspace
+        mountPath: /workspace
     securityContext:
       runAsUser: 1000
   volumes:
