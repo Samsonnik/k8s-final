@@ -90,8 +90,8 @@ def buildAndPushImage(String contextPath, String dockerfilePath, String imageNam
   container('kaniko') {
     sh """
       /kaniko/executor \
-        --context=`pwd`/${contextPath} \
-        --dockerfile=`pwd`/${dockerfilePath} \
+        --context=/workspace/${contextPath} \
+        --dockerfile=/workspace/${dockerfilePath} \
         --destination=${env.REGISTRY_URL}/${imageName}:${env.IMAGE_TAG} \
         --skip-tls-verify=true \
         --cache=true \

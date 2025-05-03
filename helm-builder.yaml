@@ -14,7 +14,7 @@ spec:
     - 9999999
     volumeMounts:
       - name: workspace
-        mountPath: /home/jenkins/agent/workspace
+        mountPath: /workspace
   volumes:
     - name: workspace
       persistentVolumeClaim:
