@@ -18,6 +18,10 @@ spec:
       - name: workspace
         mountPath: /workspace
         readOnly: false
+    env:
+    - name: WORKSPACE
+      value: /workspace
+    workingDir: /workspace
     securityContext:
       runAsUser: 0
   volumes:
