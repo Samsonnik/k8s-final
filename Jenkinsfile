@@ -13,12 +13,15 @@ pipeline {
       agent {
         kubernetes {
           yamlFile 'agent.yaml'
-          defaultContainer 'agent'
         }
       }
 
       steps {
-        git branch: 'main', url: "${GIT_URL}"
+        container('agent') {
+          sh """
+            git clone https://github.com/Samsonnik/k8s-final.git .
+          """
+        }
       }
     }
 
