@@ -1,26 +1,47 @@
+apiVersion: v1
 kind: Pod
 metadata:
   labels:
-    app: agent
+    app: jenkins-agent
 spec:
   containers:
-  - name: agent
-    image: jenkins/inbound-agent:3307.v632ed11b_3a_c7-2
-    imagePullPolicy: Always
-    tty: true
-    command:
-    - sleep
-    args:
-    - 9999999
+  - name: jnlp
+    image: jenkins/inbound-agent:3283.v92c105e0f819-9
+    args: ["$(JENKINS_SECRET)", "$(JENKINS_NAME)"]
     volumeMounts:
       - name: workspace
         mountPath: /workspace
-        readOnly: false
     env:
-    - name: WORKSPACE
-      value: /workspace
+      - name: WORKSPACE
+        value: /workspace
     workingDir: /workspace
   volumes:
-    - name: workspace
-      persistentVolumeClaim:
-        claimName: builder-pvc
+  - name: workspace
+    persistentVolumeClaim:
+      claimName: builder-pvc
+#kind: Pod
+#metadata:
+#  labels:
+#    app: agent
+#spec:
+#  containers:
+#  - name: agent
+#    image: jenkins/inbound-agent:3307.v632ed11b_3a_c7-2
+#    imagePullPolicy: Always
+#    tty: true
+#    command:
+#    - sleep
+#    args:
+#    - 9999999
+#    volumeMounts:
+#      - name: workspace
+#        mountPath: /workspace
+#        readOnly: false
+#    env:
+#    - name: WORKSPACE
+#      value: /workspace
+#    workingDir: /workspace
+#  volumes:
+#    - name: workspace
+#      persistentVolumeClaim:
+#        claimName: builder-pvc
