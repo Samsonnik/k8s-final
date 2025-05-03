@@ -33,7 +33,6 @@ pipeline {
       }
 
       steps {
-        git branch: 'main', url: "${GIT_URL}"
 
         script {
           buildAndPushImage("8.images/2.back", "8.images/2.back/dockerfile", "back")
@@ -49,7 +48,6 @@ pipeline {
       }
 
       steps {
-        git branch: 'main', url: "${GIT_URL}"
 
         script {
           container('helm') {
@@ -72,7 +70,6 @@ pipeline {
       }
 
       steps {
-        git branch: 'main', url: "${GIT_URL}"
 
         script {
           container('helm') {
