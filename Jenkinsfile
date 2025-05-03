@@ -9,7 +9,7 @@ pipeline {
 
   stages {
 
-    stage("Build & Push Front") {
+    stage("Download") {
       agent {
         kubernetes {
           yamlFile 'agent.yaml'
