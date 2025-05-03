@@ -17,8 +17,8 @@ pipeline {
       }
 
       steps {
-
         git branch: 'main', url: "${GIT_URL}"
+
         script {
           buildAndPushImage("8.images/1.front", "8.images/1.front/dockerfile", "front")
         }
@@ -33,8 +33,8 @@ pipeline {
       }
 
       steps {
-
         git branch: 'main', url: "${GIT_URL}"
+
         script {
           buildAndPushImage("8.images/2.back", "8.images/2.back/dockerfile", "back")
         }
@@ -49,14 +49,14 @@ pipeline {
       }
 
       steps {
-
         git branch: 'main', url: "${GIT_URL}"
+
         script {
           container('helm') {
             sh """
               helm upgrade --install front 3.front \
                 --namespace app \
-                --set image.repository=10.43.238.235:5000/front \
+                --set image.repository=${REGISTRY_URL}/front \
                 --set image.tag=${IMAGE_TAG}
             """
           }
@@ -72,14 +72,14 @@ pipeline {
       }
 
       steps {
-
         git branch: 'main', url: "${GIT_URL}"
+
         script {
           container('helm') {
             sh """
               helm upgrade --install back 2.back \
                 --namespace app \
-                --set image.repository=10.43.238.235:5000/back \
+                --set image.repository=${REGISTRY_URL}/back \
                 --set image.tag=${IMAGE_TAG}
             """
           }
@@ -93,8 +93,8 @@ def buildAndPushImage(String contextPath, String dockerfilePath, String imageNam
   container('kaniko') {
     sh """
       /kaniko/executor \
-        --context='pwd'/${contextPath} \
-        --dockerfile='pwd'/${dockerfilePath} \
+        --context=`pwd`/${contextPath} \
+        --dockerfile=`pwd`/${dockerfilePath} \
         --destination=${env.REGISTRY_URL}/${imageName}:${env.IMAGE_TAG} \
         --skip-tls-verify=true \
         --cache=true \
