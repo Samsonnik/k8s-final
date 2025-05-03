@@ -6,7 +6,7 @@ metadata:
     app: {{ .Release.Name }}-front
 spec:
   imagePullSecrets:
-    - name: {{ .Values.imagePullSecrets | quote }}
+  - name: {{ .Values.imagePullSecrets }}
   containers:
   - name: front
     image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"

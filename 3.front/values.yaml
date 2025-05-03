@@ -1,7 +1,7 @@
 image:
-  repository: docker-registry.docker-registry.svc.cluster.local:5000/front
+  repository: 10.43.238.235:5000/front
   tag: "01"
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
 
 imagePullSecrets: "my-registry-secret"
 
