@@ -17,13 +17,7 @@ pipeline {
       }
 
       steps {
-        script {
-          container('jnlp') {
-            sh """
-              git branch: 'main', url: "${GIT_URL}"
-            """
-          }
-        }
+        git branch: 'main', url: "${GIT_URL}"
         script {
           buildAndPushImage("8.images/1.front", "8.images/1.front/dockerfile", "front")
         }
