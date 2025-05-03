@@ -13,6 +13,7 @@ pipeline {
       agent {
         kubernetes {
           yamlFile 'agent.yaml'
+          defaultContainer 'agent'
         }
       }
 
