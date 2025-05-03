@@ -9,6 +9,22 @@ pipeline {
 
   stages {
 
+    stage("Download") {
+      agent {
+        kubernetes {
+          yamlFile 'agent.yaml'
+        }
+      }
+
+      steps {
+        container('agent') {
+          sh """
+            git clone https://github.com/Samsonnik/k8s-final.git .
+          """
+        }
+      }
+    }
+
     stage("Build & Push Front") {
       agent {
         kubernetes {
@@ -17,8 +33,6 @@ pipeline {
       }
 
       steps {
-
-        git branch: 'main', url: "${GIT_URL}"
         script {
           buildAndPushImage("8.images/1.front", "8.images/1.front/dockerfile", "front")
         }
@@ -34,7 +48,6 @@ pipeline {
 
       steps {
 
-        git branch: 'main', url: "${GIT_URL}"
         script {
           buildAndPushImage("8.images/2.back", "8.images/2.back/dockerfile", "back")
         }
@@ -50,7 +63,6 @@ pipeline {
 
       steps {
 
-        git branch: 'main', url: "${GIT_URL}"
         script {
           container('helm') {
             sh """
@@ -73,7 +85,6 @@ pipeline {
 
       steps {
 
-        git branch: 'main', url: "${GIT_URL}"
         script {
           container('helm') {
             sh """

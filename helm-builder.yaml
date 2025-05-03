@@ -12,10 +12,3 @@ spec:
     - sleep
     args:
     - 9999999
-    volumeMounts:
-      - name: workspace
-        mountPath: /home/jenkins/agent/workspace
-  volumes:
-    - name: workspace
-      persistentVolumeClaim:
-        claimName: builder-pvc

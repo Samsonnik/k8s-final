@@ -15,9 +15,6 @@ spec:
     volumeMounts:
       - name: registry-secret
         mountPath: /kaniko/.docker
-      - name: workspace
-        mountPath: /workspace
-        readOnly: false
   volumes:
     - name: registry-secret
       secret:
@@ -25,6 +22,3 @@ spec:
         items:
             - key: .dockerconfigjson
               path: config.json
-    - name: workspace
-      persistentVolumeClaim:
-        claimName: builder-pvc
