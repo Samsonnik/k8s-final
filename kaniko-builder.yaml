@@ -7,7 +7,6 @@ spec:
   - name: kaniko
     image: gcr.io/kaniko-project/executor:debug
     imagePullPolicy: Always
-    args: ["-customWorkspace", "/workspace"]
     tty: true
     command:
     - sleep
@@ -16,20 +15,6 @@ spec:
     volumeMounts:
       - name: registry-secret
         mountPath: /kaniko/.docker
-      - name: workspace
-        mountPath: /workspace
-        readOnly: false
-    env:
-    - name: WORKSPACE
-      value: /workspace
-    workingDir: /workspace
-    securityContext:
-      runAsUser: 0
-  - name: jnlp
-    image: jenkins/inbound-agent:3283.v92c105e0f819-9
-    imagePullPolicy: Always
-    args: ["-customWorkspace", "/workspace"]
-    volumeMounts:
       - name: workspace
         mountPath: /workspace
         readOnly: false
