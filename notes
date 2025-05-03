@@ -25,6 +25,8 @@ helm install prometheus prometheus-community/kube-prometheus-stack --namespace m
 # jenkis
 helm install jenkins jenkinsci/jenkins --namespace jenkis -f jenkins.yaml
 
+helm install docker-registry twuni/docker-registry --namespace docker-registry -f docker-registry.values.yaml
+
 # debug
 kubectl auth can-i get pods --namespace=app --as=system:serviceaccount:jenkis:jenkis
 
