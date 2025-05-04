@@ -1,0 +1,33 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: role-bind
+  namespace: jenkis
+rules:
+  - apiGroups: ["*"]
+    resources: ["pods", "services", "deployments", "replicasets", "statefulsets", "daemonsets"]
+    verbs: ["create", "update", "get", "list", "watch", "delete", "patch"]
+
+  - apiGroups: ["*"]
+    resources: ["secrets"]
+    verbs: ["create", "update", "get", "list", "watch", "delete"]
+
+  - apiGroups: ["*"]
+    resources: ["configmaps"]
+    verbs: ["create", "update", "get", "list", "watch", "delete"]
+
+  - apiGroups: ["networking.k8s.io"]
+    resources: ["ingresses"]
+    verbs: ["create", "update", "get", "list", "watch", "delete", "patch"]
+
+  - apiGroups: ["*"]
+    resources: ["events"]
+    verbs: ["list", "watch"]
+
+  - apiGroups: ["*"]
+    resources: ["pods/log"]
+    verbs: ["get", "list"]
+
+  - apiGroups: ["*"]
+    resources: ["pods/exec", "pods/attach"]
+    verbs: ["create", "get"]
