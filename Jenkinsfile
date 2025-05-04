@@ -55,9 +55,7 @@ pipeline {
           container('helm') {
             sh """
               helm upgrade --install front 3.front \
-                --namespace app \
-                --set image.repository=docker-registry.docker-registry.svc.cluster.local:5000/front \
-                --set image.tag=${IMAGE_TAG}
+                --namespace app
             """
           }
         }
@@ -78,9 +76,7 @@ pipeline {
           container('helm') {
             sh """
               helm upgrade --install back 2.back \
-                --namespace app \
-                --set image.repository=docker-registry.docker-registry.svc.cluster.local:5000/back \
-                --set image.tag=${IMAGE_TAG}
+                --namespace app
             """
           }
         }
