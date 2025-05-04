@@ -56,7 +56,7 @@ pipeline {
             sh """
               helm upgrade --install back 2.back \
                 --set image.repository=${REGISTRY_URL}/back \
-                --set image.tag=${IMAGE_TAG}
+                --set image.tag=${IMAGE_TAG} \
                 --namespace app
             """
           }
@@ -79,7 +79,7 @@ pipeline {
             sh """
               helm upgrade --install front 3.front \
                 --set image.repository=${REGISTRY_URL}/front \
-                --set image.tag=${IMAGE_TAG}
+                --set image.tag=${IMAGE_TAG} \
                 --namespace app
             """
           }
