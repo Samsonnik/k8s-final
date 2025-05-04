@@ -25,6 +25,7 @@ helm install prometheus prometheus-community/kube-prometheus-stack --namespace m
 # jenkis
 helm install jenkins jenkinsci/jenkins --namespace jenkis -f jenkins.yaml
 
+# private-registry
 helm install docker-registry twuni/docker-registry --namespace docker-registry -f docker-registry.values.yaml
 
 # debug
@@ -39,8 +40,6 @@ sudo ctr -n=k8s.io images list
 
 cd /var/lib/registry/docker/registry/v2/repositories/
 
-jenkins/inbound-agent:3307.v632ed11b_3a_c7-2
-
 kubectl create secret docker-registry my-registry-secret \
   --docker-server=docker-registry.docker-registry.svc.cluster.local:5000 \
   --docker-username=evgen \
@@ -48,3 +47,9 @@ kubectl create secret docker-registry my-registry-secret \
   --namespace=app
 
 /home/jenkins/agent
+
+bash -c 'cat <<EOF >> /etc/resolv.conf
+
+nameserver 10.43.0.10
+search svc.cluster.local cluster.local
+EOF'
