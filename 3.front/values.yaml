@@ -1,5 +1,5 @@
 image:
-  repository: docker-registry.docker-registry.svc.cluster.local:5000/front
+  repository: docker-registry.docker-registry:5000/front
   tag: "01"
   pullPolicy: Always
 
