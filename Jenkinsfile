@@ -41,27 +41,6 @@ pipeline {
       }
     }
 
-    stage("Deploy Front") {
-      agent {
-        kubernetes {
-          yamlFile 'helm-builder.yaml'
-        }
-      }
-
-      steps {
-        git branch: 'main', url: "${GIT_URL}"
-
-        script {
-          container('helm') {
-            sh """
-              helm upgrade --install front 3.front \
-                --namespace app
-            """
-          }
-        }
-      }
-    }
-
     stage("Deploy Back") {
       agent {
         kubernetes {
@@ -76,6 +55,32 @@ pipeline {
           container('helm') {
             sh """
               helm upgrade --install back 2.back \
+                --image.repository=${REGISTRY_URL}/back \
+                --image.tag=${IMAGE_TAG}
+                --namespace app
+            """
+          }
+        }
+      }
+    }
+
+    stage("Deploy Front") {
+      agent {
+        kubernetes {
+          yamlFile 'helm-builder.yaml'
+        }
+      }
+
+      steps {
+        git branch: 'main', url: "${GIT_URL}"
+
+        script {
+          container('helm') {
+            sh """
+              helm upgrade --install front 3.front \
+                --image.repository=${REGISTRY_URL}/front \
+                --image.tag=${IMAGE_TAG}
+                --namespace app
                 --namespace app
             """
           }
