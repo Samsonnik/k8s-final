@@ -55,8 +55,8 @@ pipeline {
           container('helm') {
             sh """
               helm upgrade --install back 2.back \
-                --image.repository=${REGISTRY_URL}/back \
-                --image.tag=${IMAGE_TAG}
+                --set image.repository=${REGISTRY_URL}/back \
+                --set image.tag=${IMAGE_TAG}
                 --namespace app
             """
           }
@@ -78,9 +78,8 @@ pipeline {
           container('helm') {
             sh """
               helm upgrade --install front 3.front \
-                --image.repository=${REGISTRY_URL}/front \
-                --image.tag=${IMAGE_TAG}
-                --namespace app
+                --set image.repository=${REGISTRY_URL}/front \
+                --set image.tag=${IMAGE_TAG}
                 --namespace app
             """
           }
